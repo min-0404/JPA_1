@@ -5,12 +5,13 @@ import lombok.Data;
 import org.hibernate.annotations.LazyToOne;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+@Data
 @Entity
 @Table(name = "orders")
-@Data
 public class Order {
 
     @Id @GeneratedValue
@@ -28,8 +29,11 @@ public class Order {
     @JoinColumn(name = "delivery_id")
     private Delivery delivery;
 
+    private LocalDateTime orderDate;
+
     @Enumerated(EnumType.STRING)
-    private OrderStatus orderStatus;
+    private OrderStatus status;
+
 
     public void setMember(Member member){
         this.member = member;
@@ -46,4 +50,33 @@ public class Order {
         delivery.setOrder(this);
     }
 
+    public static Order createOrder(Member member, Delivery delivery, OrderItem... orderItems){
+        Order order = new Order();
+        order.setMember(member);
+        order.setDelivery(delivery);
+        for(OrderItem orderItem : orderItems){
+            order.addOrderItem(orderItem);
+        }
+        order.setStatus(OrderStatus.ORDER);
+        order.setOrderDate(LocalDateTime.now());
+        return order;
+    }
+
+    public void cancel(){
+        if(delivery.getStatus() == DeliveryStatus.COMP){
+            throw new IllegalStateException("이미 배송완료된 상품은 취소가 불가능 합니다");
+        }
+        this.setStatus(OrderStatus.CANCEL);
+        for(OrderItem orderItem : orderItems){
+            orderItem.cancel();
+        }
+    }
+
+    public int getTotalPrice(){
+        int totalPrice = 0;
+        for(OrderItem orderItem : orderItems){
+            totalPrice += orderItem.getOrderPrice();
+        }
+        return totalPrice;
+    }
 }
