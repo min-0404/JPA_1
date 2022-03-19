@@ -1,5 +1,7 @@
-package jpabook.jpashop.domain;
+package jpabook.jpashop.domain.item;
 
+import jpabook.jpashop.domain.Category;
+import jpabook.jpashop.domain.NotEnoughStockException;
 import lombok.Data;
 
 import javax.persistence.*;

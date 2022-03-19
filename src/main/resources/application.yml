@@ -6,7 +6,7 @@ spring:
     driver-class-name: org.h2.Driver
   jpa:
     hibernate:
-      ddl-auto: create
+      ddl-auto: create # 매우 중요: 알아서 테이블이 생성됨, but 실제 서버운용에선 무조건 꺼야함 (기존 테이블이 삭제되고 새로 만들어질수도 있기 때문)
     properties:
       hibernate:
         # show_sql: true
