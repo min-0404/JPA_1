@@ -7,7 +7,7 @@ import javax.persistence.Entity;
 
 @Entity
 @Data
-@DiscriminatorValue("B")
+@DiscriminatorValue("B") // dtype 이용한 구분을 위해서
 public class Book extends Item{
 
     private String author;

@@ -15,10 +15,10 @@ public class ItemRepository {
     private final EntityManager em;
 
     public void save(Item item){
-        if(item.getId() == null){ // 해당 아이템이 없으면 신규 아이템이므로 새로 추가 => persist()
+        if(item.getId() == null){ // case1 : 처음 등록되는 아이템일때
             em.persist(item);
         }
-        else { // 이미 있는 아이템이면 기존 엔티티 수정 => merge()
+        else{ // case2 : 이미 등록된 아이템일때
             em.merge(item);
         }
     }
@@ -30,4 +30,6 @@ public class ItemRepository {
     public List<Item> findAll(){
         return em.createQuery("select i from Item i", Item.class).getResultList();
     }
+
+
 }

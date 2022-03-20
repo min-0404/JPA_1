@@ -7,7 +7,7 @@ import javax.persistence.Entity;
 
 @Entity
 @Data
-@DiscriminatorValue("A")
+@DiscriminatorValue("A") // dtype 이용한 구분을 위해서
 public class Album extends Item{
 
     private String artist;
