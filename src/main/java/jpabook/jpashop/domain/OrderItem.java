@@ -33,13 +33,13 @@ public class OrderItem {
         orderItem.setOrderPrice(orderPrice);
         orderItem.setCount(count);
 
-        item.removeStock(count); // 해당 Item 의 재고에서 count 수량 만큼 감소시켜줌
+        item.removeStock(count); // 중요!! : 해당 Item 의 재고에서 count 수량 만큼 감소시켜줌
         return orderItem;
     }
 
     // 비즈니스 로직
     public void cancel(){
-        getItem().addStock(count); // 해당 Item 의 재고에서 count 수량 만큼 다시 증가시켜줌
+        getItem().addStock(count); // 중요!! : 해당 Item 의 재고에서 count 수량 만큼 다시 증가시켜줌
     }
 
     // 조회 로직
