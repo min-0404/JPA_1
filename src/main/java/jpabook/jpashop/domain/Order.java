@@ -52,21 +52,26 @@ public class Order {
         delivery.setOrder(this);
     }
 
-    // Order 생성 매서드
-    public static Order createOrder(Member member, Delivery delivery, OrderItem... orderItems){
+    // Order 생성 매서드 : 주문은 워낙 복잡하기 때문에 생성 매서드 자체를 만들어주는 것이 좋다 -> 구현해놓은 연관관계 매서드 적극 활용
+    public static Order createOrder(Member member, Delivery delivery, OrderItem... orderItems){ // static 인 것이 핵심 !!
         Order order = new Order();
+        // 1. Member 설정
         order.setMember(member);
+        // 2. Delivery 설정
         order.setDelivery(delivery);
+        // 3. OrderItem 설정
         for(OrderItem x : orderItems){
             order.addOrderItem(x);
         }
+        // 4. OrderStatus 설정 : 일단 ORDER 를 기본으로
         order.setStatus(OrderStatus.ORDER);
+        // 5. OrderDate 설정 : 현재 날짜로
         order.setOrderDate(LocalDateTime.now());
         return order;
     }
 
-    // 비즈니스 로직
-    // 주문 취소
+    // <비즈니스 로직>
+    // "주문 취소" : Order 객체의 orderItems 배열의 OrderItem 객체들을 하나하나 취소해주고 재고를 원상태로 돌려놓는 것이 핵심
     public void cancel(){
         if(delivery.getStatus() == DeliveryStatus.COMP){ // case1 : 이미 배송완료된 경우
             throw new IllegalStateException("이미 배송된 상품은 취소가 불가능합니다");
@@ -74,16 +79,16 @@ public class Order {
 
         this.setStatus(OrderStatus.CANCEL); // case2 : 아직 주문 상태인 경우 -> OrderItem 리스트의 상품들 취소해줌
         for(OrderItem x : orderItems){
-            x.cancel();
+            x.cancel(); // OrderItem 클래스에서 정의한 cancel 함수 활용
         }
     }
 
     // 조회 로직
-    // 총 가격 조회
+    // "총 가격 조회" : Order 객체의 orderItems 배열에 있는 OrderItem 객체들의 가격을 모두 더해주는 것이 핵심
     public int getTotalPrice(){
         int totalPrice = 0;
         for(OrderItem x : orderItems){
-            totalPrice += x.getTotalPrice();
+            totalPrice += x.getTotalPrice(); // OrderItem 클래스에서 정의한 getTotalPrice 함수 활용
         }
         return totalPrice;
     }

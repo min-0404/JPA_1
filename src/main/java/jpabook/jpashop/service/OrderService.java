@@ -12,7 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-@Service
+@Service // 빈 등록
 @RequiredArgsConstructor
 public class OrderService {
 
@@ -40,6 +40,7 @@ public class OrderService {
         // 5. 주문 생성
         Order order = Order.createOrder(member, delivery, orderItem); // static 이라서 가능
 
+        // 6. 최종적으로 레포지터리에 주문 저장
         orderRepository.save(order);
         return order.getId();
     }
@@ -52,6 +53,7 @@ public class OrderService {
         order.cancel();
     }
 
+    @Transactional
     public List<Order> findOrders(OrderSearch orderSearch){
         return orderRepository.findAllByString(orderSearch);
     }

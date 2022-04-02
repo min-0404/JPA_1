@@ -27,6 +27,7 @@ public class MemberRepository {
     }
     public List<Member> findByName(String name){
         return em.createQuery("select m from Member m where m.name= :name", Member.class).setParameter("name", name).getResultList();
+        // 주의 ) 쿼리 파라미터로 받은 name 을 쿼리에서 :name 으로 사용했으므로 "쿼리 바인딩" 꼭 해줘야함 !!
     }
 
 }

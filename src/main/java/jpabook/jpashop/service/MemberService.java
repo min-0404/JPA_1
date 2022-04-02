@@ -12,7 +12,7 @@ import java.util.List;
 @Service // 빈 등록
 public class MemberService {
 
-    private final MemberRepository memberRepository; // @RequiredArgsConstructor 쓰면 사실 굳이 생성자 안만들어줘도 알아서 해줌
+    private final MemberRepository memberRepository; // @RequiredArgsConstructor 쓰면 사실 굳이 생성자 안만들어줘도 알아서 해줌 : 귀찮지만 그냥 예시로 생성자 주입 해봄
     @Autowired
     public MemberService(MemberRepository memberRepository){
         this.memberRepository = memberRepository;

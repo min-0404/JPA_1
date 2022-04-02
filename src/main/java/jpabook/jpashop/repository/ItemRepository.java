@@ -8,7 +8,7 @@ import org.springframework.stereotype.Repository;
 import javax.persistence.EntityManager;
 import java.util.List;
 
-@Repository
+@Repository // 빈 등록
 @RequiredArgsConstructor
 public class ItemRepository {
 

@@ -14,7 +14,7 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
-@Repository
+@Repository // 빈 등록
 @RequiredArgsConstructor
 public class OrderRepository {
 
@@ -28,12 +28,12 @@ public class OrderRepository {
         return em.find(Order.class, id);
     }
 
-    public List<Order> findAllByString(OrderSearch orderSearch){
+    public List<Order> findAllByString(OrderSearch orderSearch){ // 동적 쿼리로 구현(검색 조건 : 회원 이름 + 주문 상태)
 
-        String jpql = "select o From Order o join o.member m";
+        String jpql = "select o From Order o join o.member m"; // Order 테이블과 Member 테이블의 조인
         boolean isFirstCondition = true;
 
-        if(orderSearch.getOrderStatus() != null){
+        if(orderSearch.getOrderStatus() != null){ // 조건 1 : 만약 검색 조건에 주문 상태가 선택되었다면
             if(isFirstCondition){
                 jpql += "where";
                 isFirstCondition = false;
@@ -44,7 +44,7 @@ public class OrderRepository {
             jpql += "o.status = :status";
         }
 
-        if(StringUtils.hasText(orderSearch.getMemberName())){
+        if(StringUtils.hasText(orderSearch.getMemberName())){ // 조건 2 : 만약 검색 조건에 회원 이름이 선택되었다면
             if(isFirstCondition){
                 jpql += "where";
                 isFirstCondition = false;
@@ -57,37 +57,12 @@ public class OrderRepository {
 
         TypedQuery<Order> query = em.createQuery(jpql, Order.class).setMaxResults(1000);
 
-        if(orderSearch.getOrderStatus() != null){
+        if(orderSearch.getOrderStatus() != null){ // 쿼리 바인딩 처리 필수 (쿼리에 :status 사용했으니깐)
             query = query.setParameter("status", orderSearch.getOrderStatus());
         }
-        if(StringUtils.hasText(orderSearch.getMemberName())){
+        if(StringUtils.hasText(orderSearch.getMemberName())){ // 쿼리 바인딩 처리 필수 (쿼리에 :name 사용했으니깐)
             query = query.setParameter("name", orderSearch.getMemberName());
         }
-        return query.getResultList();
-    }
-
-    public List<Order> findAllByCriteria(OrderSearch orderSearch){
-        CriteriaBuilder cb = em.getCriteriaBuilder();
-        CriteriaQuery<Order> cq = cb.createQuery(Order.class);
-
-        Root<Order> o = cq.from(Order.class);
-        Join<Order, Member> m = o.join("member", JoinType.INNER);
-
-        List<Predicate> criteria = new ArrayList<>();
-
-        if(orderSearch.getOrderStatus() != null){
-            Predicate status = cb.equal(o.get("status"), orderSearch.getOrderStatus());
-            criteria.add(status);
-        }
-
-        if(StringUtils.hasText(orderSearch.getMemberName())){
-            Predicate name = cb.like(m.<String>get("name"), "%" + orderSearch.getMemberName() + "%");
-            criteria.add(name);
-        }
-
-        cq.where(cb.and(criteria.toArray(new Predicate[criteria.size()])));
-        TypedQuery<Order> query = em.createQuery(cq).setMaxResults(1000);
-
         return query.getResultList();
     }
 }
